@@ -36,7 +36,7 @@ class MainFrame(ctk.CTkFrame):
         self.titleBox.configure(font=("size", 20), wrap="none")
         self.titleBox.pack(side=ctk.TOP, fill=ctk.X, pady=(0, 20))
 
-        self.textbox = ctk.CTkTextbox(self, wrap="word")
+        self.textbox = ctk.CTkTextbox(self, font=("size", 16), wrap="word")
         self.textbox.pack(side=ctk.BOTTOM, fill="both", expand=True, ipady=70, ipadx=70) #nao funciona o ipad :(
         
     def getTitleBox(self):
@@ -52,6 +52,25 @@ class SideFrame(ctk.CTkFrame):
         self.button = ctk.CTkButton(self, text="Adicionar nova ideia")
         self.button.grid(row=0, column=0, padx=20, pady=20)
 
+        self.ideia = IdeiaWidget(self, fg_color="red")
+        self.ideia.grid(row=1, column=0, pady=10, ipady=10, sticky="ew")
+
+
+class IdeiaWidget(ctk.CTkFrame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
+
+        self.title = ctk.CTkLabel(self, text="Titulo")
+        self.title.pack(fill="both", expand=True)
+
+        self.desc = ctk.CTkLabel(self, text="Descricao grande blablablablablabla")
+        self.desc.pack(fill="both", expand=True)
+
+        self.editBtn = ctk.CTkButton(self, text="Editar")
+        self.editBtn.pack(fill="both", expand=True)
+
+        self.removeBtn = ctk.CTkButton(self, text="Remover")
+        self.removeBtn.pack(fill="both", expand=True)
 
 if __name__ == "__main__":
     ideanote = Ideanote()
