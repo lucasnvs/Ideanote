@@ -3,6 +3,7 @@ from Menu import Menu
 
 # background_color = "#464646"
 # principal_color = "#262626"
+ctk.set_default_color_theme("./themes/myDark.json")
 
 class Ideanote(ctk.CTk):
     def __init__(self, *args, **kwargs):
@@ -49,28 +50,38 @@ class SideFrame(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
-        self.button = ctk.CTkButton(self, text="Adicionar nova ideia")
+        self.configure(bg_color="transparent")
+
+        self.button = ctk.CTkButton(self, text="Adicionar nova ideia", cursor="hand2")
         self.button.grid(row=0, column=0, padx=20, pady=20)
 
-        self.ideia = IdeiaWidget(self, fg_color="red")
+        self.ideia = IdeiaWidget(self)
         self.ideia.grid(row=1, column=0, pady=10, ipady=10, sticky="ew")
+
+        self.range = range(2,6)
+        for i in self.range:
+            IdeiaWidget(self).grid(row=i, column=0, pady=10, ipady=10, sticky="ew");
+
 
 
 class IdeiaWidget(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
-        self.title = ctk.CTkLabel(self, text="Titulo")
-        self.title.pack(fill="both", expand=True)
+        self.grid_rowconfigure(2, weight=1)
+        self.grid_columnconfigure(1, weight=1)
+        
+        self.title = ctk.CTkLabel(self, text="Tema Vscode", corner_radius=6, anchor="w", font=("size", 19))
+        self.title.grid(row=0, column=0, columnspan=2, sticky="ew")
 
-        self.desc = ctk.CTkLabel(self, text="Descricao grande blablablablablabla")
-        self.desc.pack(fill="both", expand=True)
+        self.desc = ctk.CTkLabel(self, text="Fazer um tema personalizado para implementar no vscode.", wraplength=300, anchor="w", justify="left")
+        self.desc.grid(row=1, column=0, columnspan=2, sticky="nsew")
 
-        self.editBtn = ctk.CTkButton(self, text="Editar")
-        self.editBtn.pack(fill="both", expand=True)
+        self.removeBtn = ctk.CTkButton(self, text="Remover", cursor="hand2")
+        self.removeBtn.grid(row=2, column=0, padx=5, sticky="ew")
 
-        self.removeBtn = ctk.CTkButton(self, text="Remover")
-        self.removeBtn.pack(fill="both", expand=True)
+        self.editBtn = ctk.CTkButton(self, text="Editar", cursor="hand2")
+        self.editBtn.grid(row=2, column=1, padx=5, sticky="ew")
 
 if __name__ == "__main__":
     ideanote = Ideanote()
