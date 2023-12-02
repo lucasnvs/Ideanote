@@ -20,9 +20,10 @@ class Ideanote(ctk.CTk):
 
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(2, weight=1)
+        self.columnconfigure(0, minsize=300)
 
         self.frameSide = SideFrame(self)
-        self.frameSide.grid(row=0, rowspan=2, column=0, padx=20, pady=20, sticky="ns")
+        self.frameSide.grid(row=0, rowspan=2, column=0, padx=20, pady=20, sticky="nsew")
 
         self.frameMain = MainFrame(self)
         self.frameMain.grid(row=1, column=1, columnspan=2, padx=20, pady=20, sticky="nsew")
@@ -50,18 +51,26 @@ class SideFrame(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
+        self.grid_rowconfigure(2, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.columnconfigure(0, minsize=320)
+
         self.configure(bg_color="transparent")
 
         self.button = ctk.CTkButton(self, text="Adicionar nova ideia", cursor="hand2")
-        self.button.grid(row=0, column=0, padx=20, pady=20)
+        self.button.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
 
-        self.ideia = IdeiaWidget(self)
-        self.ideia.grid(row=1, column=0, pady=10, ipady=10, sticky="ew")
+        self.scrollFrame = IdeiaScrollFrame(self, fg_color="transparent")
+        self.scrollFrame.grid(row=1, rowspan=2, column=0, sticky="nsew")
 
-        self.range = range(2,6)
+
+class IdeiaScrollFrame(ctk.CTkScrollableFrame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
+        
+        self.range = range(0,6)
         for i in self.range:
-            IdeiaWidget(self).grid(row=i, column=0, pady=10, ipady=10, sticky="ew");
-
+            IdeiaWidget(self, fg_color="#FFF").grid(row=i, column=0, pady=10, ipady=10, sticky="ew")
 
 
 class IdeiaWidget(ctk.CTkFrame):
@@ -74,7 +83,7 @@ class IdeiaWidget(ctk.CTkFrame):
         self.title = ctk.CTkLabel(self, text="Tema Vscode", corner_radius=6, anchor="w", font=("size", 19))
         self.title.grid(row=0, column=0, columnspan=2, sticky="ew")
 
-        self.desc = ctk.CTkLabel(self, text="Fazer um tema personalizado para implementar no vscode.", wraplength=300, anchor="w", justify="left")
+        self.desc = ctk.CTkLabel(self, text="Fazer um tema personalizado para implementar no vscode.", wraplength=250, anchor="w", justify="left")
         self.desc.grid(row=1, column=0, columnspan=2, sticky="nsew")
 
         self.removeBtn = ctk.CTkButton(self, text="Remover", cursor="hand2")
