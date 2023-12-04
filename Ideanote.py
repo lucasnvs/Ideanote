@@ -1,14 +1,18 @@
 import customtkinter as ctk
 from Menu import Menu
+from widgets.IdeiaWidget import IdeiaWidget
+import data.data as dt
+from tkinter import messagebox
+import re
 
-# background_color = "#464646"
-# principal_color = "#262626"
 ctk.set_default_color_theme("./themes/myDark.json")
 
 class Ideanote(ctk.CTk):
     def __init__(self, *args, **kwargs):
         ctk.CTk.__init__(self, *args, **kwargs)
         
+        self.currentFile = False
+
         self.title("Ideanote")
         self.geometry("1200x700")
         self.resizable(width= True, height= True)
@@ -18,6 +22,9 @@ class Ideanote(ctk.CTk):
         self.menu = Menu(self)
         self.config(menu=self.menu)
 
+        # hotkey to save current file
+        self.bind('<Control-s>', self.save_current)
+        
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(2, weight=1)
         self.columnconfigure(0, minsize=300)
@@ -27,6 +34,19 @@ class Ideanote(ctk.CTk):
 
         self.frameMain = MainFrame(self)
         self.frameMain.grid(row=1, column=1, columnspan=2, padx=20, pady=20, sticky="nsew")
+
+    def save_current(self, event=False):
+        file = self.currentFile
+        if file:
+            title = self.frameMain.getTitleBox().get("1.0", "end")
+            text = self.frameMain.getTextBox().get("1.0", "end")
+            title = re.sub(r"\n", "", title)
+            text = re.sub(r"\n", "", text)
+            file["title"] = title
+            file["desc"] = text
+
+        dt.update(file["id"], file)
+        # messagebox.showinfo(message='File saved! (fake)' + str(file["id"]))
         
 class MainFrame(ctk.CTkFrame):
     def __init__(self, master, **kwargs):
@@ -57,40 +77,23 @@ class SideFrame(ctk.CTkFrame):
 
         self.configure(bg_color="transparent")
 
-        self.button = ctk.CTkButton(self, text="Adicionar nova ideia", cursor="hand2")
+        self.button = ctk.CTkButton(self, text="Adicionar nova ideia", cursor="hand2", command=self.new_idea)
         self.button.grid(row=0, column=0, padx=20, pady=20, sticky="nsew")
 
         self.scrollFrame = IdeiaScrollFrame(self, fg_color="transparent")
         self.scrollFrame.grid(row=1, rowspan=2, column=0, sticky="nsew")
 
 
+    def new_idea(self):
+        self.master.title("Nova Ideia")
+
 class IdeiaScrollFrame(ctk.CTkScrollableFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
         
-        self.range = range(0,6)
-        for i in self.range:
-            IdeiaWidget(self, fg_color="#FFF").grid(row=i, column=0, pady=10, ipady=10, sticky="ew")
-
-
-class IdeiaWidget(ctk.CTkFrame):
-    def __init__(self, master, **kwargs):
-        super().__init__(master, **kwargs)
-
-        self.grid_rowconfigure(2, weight=1)
-        self.grid_columnconfigure(1, weight=1)
-        
-        self.title = ctk.CTkLabel(self, text="Tema Vscode", corner_radius=6, anchor="w", font=("size", 19))
-        self.title.grid(row=0, column=0, columnspan=2, sticky="ew")
-
-        self.desc = ctk.CTkLabel(self, text="Fazer um tema personalizado para implementar no vscode.", wraplength=250, anchor="w", justify="left")
-        self.desc.grid(row=1, column=0, columnspan=2, sticky="nsew")
-
-        self.removeBtn = ctk.CTkButton(self, text="Remover", cursor="hand2")
-        self.removeBtn.grid(row=2, column=0, padx=5, sticky="ew")
-
-        self.editBtn = ctk.CTkButton(self, text="Editar", cursor="hand2")
-        self.editBtn.grid(row=2, column=1, padx=5, sticky="ew")
+        self.data = dt.read()
+        for ideia in self.data:
+            IdeiaWidget(self, ideia, fg_color="#FFF").grid(row=self.data.index(ideia), column=0, pady=10, ipady=10, sticky="ew")
 
 if __name__ == "__main__":
     ideanote = Ideanote()

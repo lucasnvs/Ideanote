@@ -2,13 +2,13 @@
     {
         "id": 1,
         "title": "Interpretador Rinha",
-        "desc": "Quero Fazer",
+        "desc": "Fazer, ta funcionando o CTRL + S para salvar.",
         "date": "27/11/2023"
     },
     {
         "id": 2,
         "title": "Kotlin Backend",
-        "desc": "Muito complexo",
+        "desc": "Backend REST API em kotlin, usando serializacao e testes.",
         "date": "27/11/2023"
     },
     {

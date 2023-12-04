@@ -7,18 +7,19 @@ def read():
     f = open('data/ideias.json', "r")
     data = json.load(f)
     f.close()
+    
     return data
 
-def write(object):
+def write(data):
+    with open("data/ideias.json", "w") as arquivo:     
+        json.dump(data, arquivo, indent=4)
+
+def writeObject(object):
     data = read()
     data.append(object)
 
     with open("data/ideias.json", "w") as arquivo:     
         json.dump(data, arquivo, indent=4)
-
-def getLastId():
-    data = read()
-    return data[len(data) - 1]["id"]
 
 def append(title, desc):
 
@@ -29,12 +30,29 @@ def append(title, desc):
         ideia["desc"] = desc
         ideia["date"] = date.strftime("%d/%m/%Y")
 
-        write(ideia)
+        writeObject(ideia)
 
         return True
     
     return False
 
-append("Tema", "Fazer um tema especifico")
-for i in read():
-    print(i)
+def update(id, ideia):
+    data = read()
+
+    for idea in data:
+        if(idea["id"] == id):
+            data[data.index(idea)] = ideia
+            break
+    
+    write(data)
+
+def getLastId():
+    data = read()
+    return data[len(data) - 1]["id"]
+
+def findById(id):
+    data = read()
+
+    for idea in data:
+        if(idea.get("id") == id): 
+            return idea
